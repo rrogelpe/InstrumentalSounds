@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<!-- Demonstrates the creation of checkboxes and radio buttons dynamically
+    and shows how to display timing information with blinking radio buttons -->
+
+<html lang="en">
+<head>
+	<title>Dynamic Checkboxes</title>
+	<link rel="stylesheet" href="dynamicSounds.css">
+ 	  
+	<script>
+		var index = 0;
+		var isOff = true;
+		var tempo = 200;
+		var x;
+		var img_id;
+
+		var maxCheckboxes = 16;
+		var maxRadioButtons = 16;
+
+		var checkboxArray = new Array();
+		var checkboxArray1  = new Array();  // array to keep track of all the checkboxes
+		var checkboxArray2 = new Array();
+		var checkboxArray3 = new Array();
+
+		checkboxArray[0] = checkboxArray1;
+		checkboxArray[1] = checkboxArray2;
+		checkboxArray[2] = checkboxArray3;
+
+
+		var radioButtonArray = new Array();  // array to keep track of all the radio buttons
+		var audioArray = new Array();
+
+		function addInputControl(type, targetId) {
+			var element = document.createElement("input");  //Create an input type dynamically.
+			element.type = type;
+			var el = document.getElementById(targetId);
+			el.appendChild(element);
+			return element;         // returns the newly created element
+		}
+
+		function populateControl(){
+			for(var j=0; j<maxCheckboxes; j++){
+				checkboxArray1[j] = addInputControl("checkbox", "control1");
+			}             // add checkboxes
+		    
+			for(var j=0; j<maxCheckboxes; j++){
+				checkboxArray2[j] = addInputControl("checkbox", "control2");
+			}			// add checkboxes
+
+			for(var j=0; j<maxCheckboxes; j++){
+				checkboxArray3[j] = addInputControl("checkbox", "control3");
+			}
+
+			for(var j=0; j<maxRadioButtons; j++){
+				radioButtonArray[j] = addInputControl("radio", "control4");
+			}            // add radio buttons
+					
+			prepareAudio();
+		}
+
+		function setTempo(new_value) {
+			tempo = new_value;
+		}
+
+		function start() {
+			isOff = false;
+			clearTimeout(x); //Clears timeout to restart tick count when stop button is clicked
+			if(index>radioButtonArray.length-1){ //Loop tick count
+				radioButtonArray[index-1].checked = !radioButtonArray[index-1].checked; // unhighlight current tick
+				index = 0;
+			}
+			radioButtonArray[index].checked = !radioButtonArray[index].checked; //highlights current tick
+			if( checkboxArray1[index].checked) { //If checkbox is checked
+				playAudio(0); //Play audio
+			}
+			if( checkboxArray2[index].checked) {
+				playAudio(1);
+			}
+			if( checkboxArray3[index].checked) {
+				playAudio(2);
+			}
+			
+			if(index>0) {
+				var temp = index-1;
+				radioButtonArray[temp].checked = !radioButtonArray[temp].checked;
+			}
+			index++;
+			x = setTimeout("start()",tempo);
+		}
+
+		function stop() {//Resets tick count and empties current tick fill
+			if(!isOff){
+				clearTimeout(x);
+				radioButtonArray[index-1].checked = !radioButtonArray[index-1].checked;
+				index = 0;
+				isOff = true;
+			}
+		}
+
+		function prepareAudio(){
+			audioArray[0] = document.createElement("audio");  //  add audio
+			audioArray[1] = document.createElement("audio");  //  add audio
+			audioArray[2] = document.createElement("audio");  //  add audio
+		}
+
+		function playAudio(index){
+			audioArray[index].currentTime = 0;
+			audioArray[index].play();
+			audioArray[index].volume = 0.5;
+		}
+
+		function allowDrop(ev) {
+		    ev.preventDefault();
+		}
+
+		function drag(ev) {
+		    ev.dataTransfer.setData("text", ev.target.id);
+		    img_id = ev.target.id; //Store image id
+		}
+
+		function drop(ev,target) {
+		    ev.preventDefault();
+		    var data = ev.dataTransfer.getData("text");
+		    ev.target.appendChild(document.getElementById(data));
+		    allocateSound(img_id,target);
+		}
+
+		function allocateSound(sound,target){ //allocate sound to appropriate array index 
+			var num;
+
+			if(target.id=="div1") {
+				num = 0;
+			}
+			else if(target.id=="div2") {
+				num = 1;
+			}
+			else{
+				num = 2;
+			}
+			audioArray[num].src = sound;
+		}
+	</script>
+
+</head>
+<body onload="populateControl()">
+	<h1>The Rythm App</h1>
+
+	<article id="block">
+	  	<div id="control1"></div>
+
+	  	<div id="div1" ondrop="drop(event,this)" ondragover="allowDrop(event)"></div>
+
+	  	<div id="control2"></div>
+
+	  	<div id="div2" ondrop="drop(event,this)" ondragover="allowDrop(event)"></div>
+
+	  	<div id="control3"></div>
+
+	  	<div id="div3" ondrop="drop(event,this)" ondragover="allowDrop(event)"></div>
+	</article>
+	<hr/>
+	<div id="control4"> </div>
+	<p id="ticks">Ticks</p>
+	<hr/>
+	<div>
+	  	<button class="menu" type="button" onClick="start()">Play</button>
+		<button class="menu" type="button" onClick="stop()">Stop</button>
+		<p class="menu label">TEMPO:</P>
+		<input class="menu" type="range" min="25" max="475" value="250" step="1" onchange='setTempo(this.value)' />
+	</div>
+	<section id="sourceBox">
+		<img id="snare.mp3" src="snare.png" draggable="true" ondragstart="drag(event)" width="70px" height="70px">
+	    <img id="hihat.mp3" src="hihat.jpg" draggable="true" ondragstart="drag(event)" width="70px" height="70px">
+	    <img id="kick.mp3" src="kick.jpg" draggable="true" ondragstart="drag(event)" width="70px" height="70px">
+	    <img id="flute.mp3" src="flute.jpg" draggable="true" ondragstart="drag(event)" width="70px" height="70px">
+	    <img id="saxophone.mp3" src="saxophone.jpg" draggable="true" ondragstart="drag(event)" width="70px" height="70px">
+	</section>
+
+</body>
+</html>

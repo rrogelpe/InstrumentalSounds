@@ -1,0 +1,59 @@
+.menu {
+	display:inline-block;
+}
+.label {
+	margin-left: 7.5px;
+	margin-right: 7.5px;
+}
+body{
+  	text-align: center;
+	background-color: #EEE;
+}
+div{
+	margin: 30px;
+}
+#output{
+	font-size: 2em;
+}
+input[type=checkbox]{
+	-webkit-transform: scale(2);
+	margin: 12px;
+}
+input[type=radio]{
+	-webkit-transform: scale(2);
+	margin: 12px;
+}
+#control1, #control2, #control3{
+	margin-right: 1px;
+	margin-left: 25px;
+	display:inline-block;
+}
+#block{
+	width:50%;
+	height:40%px;
+	display:block;
+	margin-right: auto;
+	margin-left: auto;
+	padding-left: 75px;
+}
+
+#div1,#div2,#div3 {
+	width:75px;
+	margin-bottom: -30px;
+	height:75px;
+	border:1px solid #aaaaaa;
+	background-color: white;
+	display:inline-block;
+}
+#div4{
+	width:50px;
+	height:50px;
+	border:1px solid #aaaaaa;
+	background-color: white;
+}
+#ticks,#control4{
+	display:inline-block;
+}
+
+#sourceBox{margin: auto; width:50%; height:72px; border: 1px solid #444;}
+#sourceBox{background-color:#DDD}
